@@ -51,3 +51,25 @@ def initiate_GET(endpoint: str, base_url=REDDIT_API_URL, params=None):
     unauthenticated_url = request_url.replace('oauth.', '')
     raise Exception(f"The request returned a {response.status_code} error for the url "
                     f"{unauthenticated_url}. The error message was '{response.reason}'")
+
+
+def initiate_POST(endpoint: str, base_url=REDDIT_API_URL, data=None, is_put=False):
+    '''
+    Initiates a POST requests to the endpoint, unless is_put is set to True.
+    If so, it initiates a PUT request
+    '''
+    headers = authenticated_headers()
+    request_url = base_url + endpoint
+    if is_put:
+        response = requests.put(url=request_url,
+                                data=data,
+                                headers=headers)
+    else:
+        response = requests.post(url=request_url,
+                                 data=data,
+                                 headers=headers)
+
+    request_type = 'PUT' if is_put else 'POST'
+    if not response.ok:
+        raise Exception(f"The {request_type} request returned a '{response.status_code}' error because: '{response.reason}'"
+                        f"Make sure the inputted url '{request_url}' is intended")

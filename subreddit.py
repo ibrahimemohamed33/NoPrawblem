@@ -28,6 +28,39 @@ class SubRedditRequest:
         endpoint = extend_url('/r', self.subreddit, args)
         return initiate_GET(endpoint, params=params)
 
+    def subscribe(self):
+        '''
+        Subscribes to the subreddit
+        '''
+        return self.subscribe_to_subreddits([self.subreddit], True)
+
+    def unsubscribe(self):
+        '''
+        Unsubscribes to the subreddit
+        '''
+        return self.subscribe_to_subreddits([self.subreddit], False)
+
+    def search_subreddit_names(self, query: str, exact=False,
+                               include_over_18=True):
+        '''
+        Finds subreddits whose names closely match the query
+        '''
+        params = {'exact': exact,
+                  'include_over_18': include_over_18,
+                  'query': query}
+
+        return initiate_GET('/api/search_reddit_names', params=params)
+
+    def subscribe_to_subreddits(self, subreddits: list, subscribe: bool):
+        '''
+        Subscribes or unsubscribes to the values in subreddits depending on the
+        boolean subscribe
+        '''
+        action = 'sub' if subscribe else 'unsub'
+        data = {'action': action,
+                'sr_name': ', '.join(subreddits)}
+        return initiate_POST('/api/subscribe', data=data)
+
     def get_reddit_posts(self, listing: str, t: str or None, limit: int) -> 'list[dict]':
         '''
         Makes a GET request to the server to receive the first N reddit posts
@@ -77,7 +110,6 @@ class SubRedditRequest:
             raise ValueError(
                 f"Cannot have listing {listing} while not specifying a time parameter")
 
-        print(self.dataframe)
         subreddit_posts = self.get_reddit_posts(listing, t, limit)
         values = {column_name: [] for column_name in DATAFRAME_COLUMNS}
         for post in subreddit_posts:
