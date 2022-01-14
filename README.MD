@@ -24,3 +24,6 @@ reddit.subreddit_data('madmen', ['hot', 'new', 'top'], times=['week'])
 
 In doing so, you get a dataframe like the one in Images/dataframe.png
 ![dataframe](/Images/dataframe.png)
+
+Which matches the reddit page here
+![reddit](/Images/reddit.png)
