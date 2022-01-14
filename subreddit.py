@@ -9,7 +9,7 @@ INDEX = DATAFRAME_COLUMNS[0]
 
 
 class SubRedditRequest:
-    def __init__(self, subreddit_name: str) -> None:
+    def __init__(self, subreddit_name: str, headers: dict) -> None:
         '''
         Initializes the Reddit Request class
 
@@ -18,6 +18,7 @@ class SubRedditRequest:
             is_username: whether the name is a username or a subreddit page
         '''
         self.subreddit = subreddit_name
+        self.headers = headers
         self.dataframe = pd.DataFrame(
             columns=DATAFRAME_COLUMNS).set_index(INDEX)
 
@@ -26,19 +27,7 @@ class SubRedditRequest:
         Initiates a GET request to Reddit's API relating to subreddit endpoints
         '''
         endpoint = extend_url('/r', self.subreddit, args)
-        return initiate_GET(endpoint, params=params)
-
-    def subscribe(self):
-        '''
-        Subscribes to the subreddit
-        '''
-        return self.subscribe_to_subreddits([self.subreddit], True)
-
-    def unsubscribe(self):
-        '''
-        Unsubscribes to the subreddit
-        '''
-        return self.subscribe_to_subreddits([self.subreddit], False)
+        return initiate_GET(endpoint, self.headers, params=params)
 
     def get_reddit_posts(self, listing: str, t: str or None, limit: int) -> 'list[dict]':
         '''

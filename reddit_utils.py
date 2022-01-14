@@ -4,25 +4,6 @@ from Request_Constants import *
 from API_Codes import *
 
 
-def authenticated_headers(script_code=SCRIPT_CODE, secret_code=SECRET_CODE) -> 'dict[str, str]':
-    '''
-    Runs the authentication request to secure the authorization headers to
-    access the Reddit API
-
-    Inputs:
-        script_code: the private code for running the scripts that extract data
-        secret_code: the extremely private code for the app that cannot be shared
-    '''
-    auth = requests.auth.HTTPBasicAuth(script_code, secret_code)
-    OAuth_Post = requests.post(url=REDDIT_ACCESS_TOKEN_LINK,
-                               auth=auth,
-                               data=data,
-                               headers=HEADERS)
-
-    access_token = OAuth_Post.json()['access_token']
-    return {**HEADERS, **{'Authorization': f"bearer {access_token}"}}
-
-
 def extend_url(uri_initial: str, *args: 'list[str]'):
     '''
     Extends the uri of a URL given a list of arguments
@@ -35,11 +16,10 @@ def extend_url(uri_initial: str, *args: 'list[str]'):
     return uri
 
 
-def initiate_GET(endpoint: str, base_url=REDDIT_API_URL, params=None):
+def initiate_GET(endpoint: str, headers: dict, base_url=REDDIT_API_URL, params=None):
     '''
     Initiates a GET request to the Reddit API
     '''
-    headers = authenticated_headers()
     request_url = base_url + endpoint
     response = requests.get(url=request_url,
                             params=params,
@@ -53,12 +33,12 @@ def initiate_GET(endpoint: str, base_url=REDDIT_API_URL, params=None):
                     f"{unauthenticated_url}. The error message was '{response.reason}'")
 
 
-def initiate_POST(endpoint: str, base_url=REDDIT_API_URL, data=None, is_put=False):
+def initiate_POST(endpoint: str, headers: dict, base_url=REDDIT_API_URL,
+                  data=None, is_put=False):
     '''
     Initiates a POST requests to the endpoint, unless is_put is set to True.
     If so, it initiates a PUT request
     '''
-    headers = authenticated_headers()
     request_url = base_url + endpoint
     if is_put:
         response = requests.put(url=request_url,

@@ -53,23 +53,38 @@ class Reddit:
         action = 'sub' if subscribe else 'unsub'
         data = {'action': action,
                 'sr_name': ', '.join(subreddits)}
-        return initiate_POST('/api/subscribe', data=data)
+        return initiate_POST('/api/subscribe', self.headers, data=data)
 
     def get_subreddit_posts(self, subreddit_name: str, listing: str, t: str or None,
                             limit: int):
         '''
         Retrieves the subreddit posts of a specific subreddit
         '''
-        subreddit = SubRedditRequest(subreddit_name=subreddit_name)
-        return subreddit.get_reddit_posts(listing=listing, t=t, limit=limit)
+        subreddit = SubRedditRequest(subreddit_name=subreddit_name,
+                                     headers=self.headers)
 
-    def subreddit_data(self, subreddit_name: str, listing: str, t=None,
-                       limit=DEFAULT_LIMIT):
+        return subreddit.get_reddit_posts(listing=listing,
+                                          t=t,
+                                          limit=limit)
+
+    def subreddit_posts_data(self,
+                             subreddit_name: str,
+                             listings: 'list[str]',
+                             times=None,
+                             limit=DEFAULT_LIMIT):
         '''
         Fetches the reddit data for a subreddit and listing (e.g., 'hot', 'new',
         'top', 'rising', etc.)
         '''
-        subreddit = SubRedditRequest(subreddit_name=subreddit_name)
-        return subreddit.fetch_subreddit_data(listing=listing,
-                                              t=t,
-                                              limit=limit)
+        subreddit = SubRedditRequest(subreddit_name=subreddit_name,
+                                     headers=self.headers)
+        for listing in listings:
+            if listing == 'top':
+                for t in times:
+                    subreddit.fetch_subreddit_data(listing=listing,
+                                                   t=t,
+                                                   limit=limit)
+            else:
+                subreddit.fetch_subreddit_data(listing=listing, limit=limit)
+
+        return subreddit.dataframe

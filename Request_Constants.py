@@ -1,10 +1,3 @@
-from API_Codes import PASSWORD, USERNAME
-
-HEADERS = {'User-Agent': 'MyBot/0.0.1'}
-data = {'grant_type': 'password',
-        'username': USERNAME,
-        'password': PASSWORD}
-
 valid_get_listings = ["best",
                       "by_id/names",
                       "comments/article",
