@@ -12,18 +12,21 @@ reddit = nopraw.Reddit(username=YOUR_USERNAME,
                        password=YOUR_PASSWORD, 
                        client_secret=YOUR_SECRET_CODE, 
                        client_id=YOUR_CLIENTID, 
-                       user_agent='MyBot')`
+                       user_agent='MyBot')
 ```
 
 ## Example
 **_NoPrawblem_** supports retrieving some of the more important data within current Reddit posts. These include each post's ID, public URL, title, subtext, and comments. For example, to retrieve (up to a limit of 25 in this example) the new, hot, and top posts, we run the command:
 
 ```python
-reddit.subreddit_data('madmen', ['hot', 'new', 'top'], times=['week'])
+reddit.subreddit_posts_data('madmen', ['hot', 'new', 'top'], times=['week'])
 ```
 
 In doing so, you get a dataframe like the one in Images/dataframe.png
 ![dataframe](/Images/dataframe.png)
 
-Which matches the reddit page here
+When looking at the first result of the dataframe, for example, we get
+![example](/Images/example.png)
+
+This matches the reddit post here
 ![reddit](/Images/reddit.png)
