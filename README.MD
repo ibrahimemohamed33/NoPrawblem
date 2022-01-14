@@ -5,16 +5,21 @@ This repository is an implementation of some of the more useful features of conn
 ## Getting Started
 
 Once you have your username, password, client secret code, and script code, simply run these two commands:
-`import nopraw`
-`reddit = nopraw.Reddit(username=USERNAME,
+
+```python
+import nopraw 
+reddit = nopraw.Reddit(username=USERNAME,
                         password=PASSWORD, 
                         client_secret=SECRET_CODE, 
                         client_id=SCRIPT_CODE, 
                         user_agent='MyBot')`
+```
 
-## Examples
+## Example
 **_NoPrawblem_** supports retrieving some of the more important data within current Reddit posts. These include each post's ID, public URL, title, subtext, and comments. For example, to retrieve (up to a limit of 25 in this example) the new, hot, and top posts, we run the command:
 
-`reddit.subreddit_data('madmen', ['hot', 'new', 'top'], times=['week'])`
+```python
+reddit.subreddit_data('madmen', ['hot', 'new', 'top'], times=['week'])
+```
 
 In doing so, you get a dataframe like the one in Images/dataframe.png
