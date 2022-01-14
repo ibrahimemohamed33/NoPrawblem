@@ -40,27 +40,6 @@ class SubRedditRequest:
         '''
         return self.subscribe_to_subreddits([self.subreddit], False)
 
-    def search_subreddit_names(self, query: str, exact=False,
-                               include_over_18=True):
-        '''
-        Finds subreddits whose names closely match the query
-        '''
-        params = {'exact': exact,
-                  'include_over_18': include_over_18,
-                  'query': query}
-
-        return initiate_GET('/api/search_reddit_names', params=params)
-
-    def subscribe_to_subreddits(self, subreddits: list, subscribe: bool):
-        '''
-        Subscribes or unsubscribes to the values in subreddits depending on the
-        boolean subscribe
-        '''
-        action = 'sub' if subscribe else 'unsub'
-        data = {'action': action,
-                'sr_name': ', '.join(subreddits)}
-        return initiate_POST('/api/subscribe', data=data)
-
     def get_reddit_posts(self, listing: str, t: str or None, limit: int) -> 'list[dict]':
         '''
         Makes a GET request to the server to receive the first N reddit posts
@@ -101,7 +80,7 @@ class SubRedditRequest:
                 retrieve_comments(metadata)
         return comments
 
-    def fetch_reddit_data(self, listing, t=None, limit=DEFAULT_LIMIT) -> None:
+    def fetch_subreddit_data(self, listing, t=None, limit=DEFAULT_LIMIT) -> None:
         '''
         Fetches data from Reddit's API given the listing, and the time period
         to search if the listing is for top reddit posts.
@@ -141,9 +120,9 @@ if __name__ == '__main__':
     times = ['hour', 'day', 'week', 'month', 'year', 'all']
     for listing in listings:
         if listing != 'top':
-            subreddit.fetch_reddit_data(listing)
+            subreddit.fetch_subreddit_data(listing)
         else:
             for time in times:
-                subreddit.fetch_reddit_data(listing, time)
+                subreddit.fetch_subreddit_data(listing, time)
 
     subreddit.dataframe.to_csv('madmen.csv')
